@@ -1,0 +1,28 @@
+name: Scrape latest data
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # Runs every 6 hours
+  workflow_dispatch:
+
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repo
+        uses: actions/checkout@v2
+
+      - name: Fetch latest data
+        run: |-
+          # Fetch the air quality data
+          curl https://ftlr.fairtrading.qld.gov.au/home/search?MasterType=AUCTIONEER%20AND%20CHATTEL%20AUCTIONEER > auctioneer.json
+          curl https://ftlr.fairtrading.qld.gov.au/home/search?MasterType=REAL%20ESTATE > real-estate.json
+      - name: Commit and push if it changed
+        run: |-
+          git config user.name "Automated"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Latest data: ${timestamp}" || exit 0
+          git pull --rebase
+          git push
