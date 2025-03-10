@@ -11,15 +11,12 @@ jobs:
     steps:
       - name: Check out this repo
         uses: actions/checkout@v2
-
-      - name: Update CA Certificates
-        run: sudo apt-get update && sudo apt-get install -y ca-certificates
-
+        
       - name: Fetch latest data
         run: |-
           # Fetch the air quality data
-          curl https://ftlr.fairtrading.qld.gov.au/home/search?MasterType=AUCTIONEER%20AND%20CHATTEL%20AUCTIONEER > auctioneer.json
-          curl https://ftlr.fairtrading.qld.gov.au/home/search?MasterType=REAL%20ESTATE > real-estate.json
+          curl -k https://ftlr.fairtrading.qld.gov.au/home/search?MasterType=AUCTIONEER%20AND%20CHATTEL%20AUCTIONEER > auctioneer.json
+          curl -k https://ftlr.fairtrading.qld.gov.au/home/search?MasterType=REAL%20ESTATE > real-estate.json
       
       - name: Commit and push if it changed
         run: |-
